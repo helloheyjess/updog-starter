@@ -19,6 +19,14 @@ updog.createDog = (data) => {
 	});
 };
 
+updog.delete = (id) => {
+  return $.ajax({
+    url: `/api/pets/${id}`,
+    method: "DELETE",
+    dataType: "json"
+  });
+};
+
 updog.upvote = (id) => {
 	return $.ajax({
 		url: `/api/pets/${id}`,
@@ -30,15 +38,19 @@ updog.upvote = (id) => {
 updog.displayDogs = (dogs) => {
 	$('#dogos').empty();
 	dogs.forEach((dog) => {
-		const $container = $("<div>").addClass('dogo');
-		const $img = $('<img>').attr('src',dog.photo);
-		const $name = $('<h3>').text(dog.name);
-		const $desc = $('<p>').text(dog.description);
+		const $container      = $("<div>").addClass('dogo');
+    const $close          = $("<i>").addClass("fa fa-times remove").data('id',dog._id);
+		const $img            = $('<img>').attr('src',dog.photo);
+		const $name           = $('<h3>').text(dog.name);
+		const $desc           = $('<p>').text(dog.description);
 		const $scoreContainer = $('<div>').addClass('score-container');
-		const $score = $('<p>').text(dog.score).addClass('score');
-		const $thumb = $('<p>').text('👍').addClass('updog').data('id',dog._id);
+		const $score          = $('<p>').text(dog.score).addClass('score');
+		const $thumb          = $('<p>').text('👍').addClass('updog').data('id',dog._id);
+
 		$scoreContainer.append($score,$thumb);
-		$container.append($img,$name,$desc,$scoreContainer);
+
+		$container.append($close,$img,$name,$desc,$scoreContainer);
+
 		$('#dogos').append($container);
 	})
 };
@@ -61,12 +73,19 @@ updog.events = () => {
 		$('.add-dogo').toggleClass('show');
 	});
 
-	$('#dogos').on('click', '.updog' ,function() {
+	$('#dogos').on('click', '.updog', function() {
 		const id = $(this).data('id');
 		updog.upvote(id)
 			.then(updog.getDogs)
 			.then(updog.displayDogs)
 	});
+
+  $('#dogos').on('click', '.remove', function() {
+    const id = $(this).data('id');
+    updog.delete(id)
+      .then(updog.getDogs)
+      .then(updog.displayDogs)
+  });
 };
 
 updog.init = () => {

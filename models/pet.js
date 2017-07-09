@@ -20,7 +20,10 @@ const petSchema = new Schema({
     type: String,
     default: "What a good dog!"
   },
-  score: Number
+  score: {
+    type: Number,
+    default: 0
+  }
 });
 
 // Connects us to the Pets collection (use singular here)

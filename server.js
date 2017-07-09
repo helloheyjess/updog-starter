@@ -23,12 +23,18 @@ const mongoose = require('mongoose');
 // Import our Pet model
 const Pet = require('./models/pet');
 
+// Import Body Parser module
+const bodyParser = require('body-parser');
+
 // Connect to MongoDB and the updog database
 mongoose.connect('mongodb://localhost/updog');
 
 // Use the public directory as our static file location
 // http://expressjs.com/en/api.html#app.use
 app.use(express.static('public'));
+
+// Take body of POST/PUT request and converts to JSON
+app.use(bodyParser.json());
 
 // Set up the our requests using our Router
 router.route('/')
@@ -39,6 +45,7 @@ router.route('/')
   });
 
 // Pets controller
+
 router.route('/pets')
   .get((req, res) => {
     // Get all the pets
@@ -61,7 +68,109 @@ router.route('/pets')
         .send(docs);
     });
   })
-  .post();
+  .post((req, res) => {
+    // Store the body of the request
+    const body = req.body;
+
+    // Create a new pet
+    const pet = new Pet(body);
+
+    // Save the pet
+    pet.save((err, doc) => {
+      // If there is an error, send 400 status code to the client
+      // along with the an object that includes the error returned
+      if (err !== null) {
+        res
+          .status(400)
+          .send({
+            error: err
+          });
+
+        return;
+      }
+
+      // If all goes well, send back to pet doc
+      res
+        .status(200)
+        .send(doc);
+    });
+  });
+
+router.route('/pets/:pet_id')
+  .get((req, res) => {
+    // Get Pet by ID
+    const params = req.params;
+
+    Pet.findOne({ _id: params.pet_id }, (err, doc) => {
+      if (err !== null) {
+        res
+          .status(400)
+          .send({
+            error: err
+          });
+
+        return;
+      }
+
+      res
+        .status(200)
+        .send(doc);
+    });
+  })
+  .put((req, res) => {
+    // Update Pet by ID
+    const params = req.params;
+
+    Pet.findById(params.pet_id, (err, doc) => {
+      if (err !== null) {
+        res
+          .status(400)
+          .send({
+            error: err
+          });
+
+        return;
+      }
+
+      Object.assign(doc, req.body, {score: doc.score += 1});
+
+      doc.save((err, savedDoc) => {
+        if (err !== null) {
+          res
+            .status(400)
+            .send({
+              error: err
+            });
+
+          return;
+        }
+
+        res
+          .status(200)
+          .send(savedDoc);
+      });
+    });
+  })
+  .delete((req, res) => {
+    // Delete Pet by ID
+    Pet.findByIdAndRemove(req.params.pet_id, (err, doc) => {
+      if (err !== null) {
+        res
+          .status(400)
+          .send({
+            error: err
+          });
+
+        return;
+      }
+
+      res
+        .status(200)
+        .send({
+          success: "Item Deleted"
+        });
+    });
+  });
 
 // Set up our endpoint using the router
 // http://expressjs.com/en/api.html#app.use

@@ -27,7 +27,7 @@ const Pet = require('./models/pet');
 const bodyParser = require('body-parser');
 
 // Connect to MongoDB and the updog database
-mongoose.connect('mongodb://localhost/updog');
+mongoose.connect('mongodb://heroku_38p9b510:pkpqjr33vj8gckh8t3lu3po3ik@ds153392.mlab.com:53392/heroku_38p9b510');
 
 // Use the public directory as our static file location
 // http://expressjs.com/en/api.html#app.use

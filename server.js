@@ -20,6 +20,9 @@ const port = process.env.PORT || 8080;
 // Import Mongoose so we can connect to MongoDB
 const mongoose = require('mongoose');
 
+// Import our Pet model
+const pet = require('./models/pet');
+
 // Connect to MongoDB and the updog database
 mongoose.connect('mongodb://localhost/updog');
 

@@ -3,7 +3,10 @@ const updog = {};
 updog.getDogs = () => {
 	return $.ajax({
 		url: '/api/pets',
-		dataType: 'json'
+		dataType: 'json',
+    data: {
+      order_by: 'score'
+    }
 	});
 };
 
@@ -66,7 +69,7 @@ updog.events = () => {
 		updog.createDog(dog)
 			.then(() => $('.add-dogo').toggleClass('show'))
 			.then(updog.getDogs)
-			.then(updog.displayDogs)
+			.then(updog.displayDogs);
 	});
 
 	$('.toggle-dogo').on('click',() => {
@@ -77,14 +80,14 @@ updog.events = () => {
 		const id = $(this).data('id');
 		updog.upvote(id)
 			.then(updog.getDogs)
-			.then(updog.displayDogs)
+			.then(updog.displayDogs);
 	});
 
   $('#dogos').on('click', '.remove', function() {
     const id = $(this).data('id');
     updog.delete(id)
       .then(updog.getDogs)
-      .then(updog.displayDogs)
+      .then(updog.displayDogs);
   });
 };
 

@@ -49,7 +49,18 @@ router.route('/')
 router.route('/pets')
   .get((req, res) => {
     // Get all the pets
-    Pet.find({}, (err, docs) => {
+    const query = req.query;
+
+    const pet = Pet.find();
+
+    // Sort our pets
+    if (query.order_by === 'score') {
+      pet.sort({
+        score: -1
+      });
+    }
+
+    pet.exec((err, docs) => {
       // If there is an error, send 400 status code to the client
       // along with the an object that includes the error returned
       if (err !== null) {

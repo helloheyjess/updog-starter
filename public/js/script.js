@@ -63,8 +63,8 @@ updog.events = () => {
 		e.preventDefault();
 		const dog = {
 			name : $('#name').val(),
-			description: $('#description').val(),
-			photo: $('#photo').val()
+			description: $('#description').val() || undefined,
+			photo: $('#photo').val() || undefined
 		}
 		updog.createDog(dog)
 			.then(() => $('.add-dogo').toggleClass('show'))

@@ -12,7 +12,10 @@ const petSchema = new Schema({
     type: String,
     required: true
   },
-  photo: String,
+  photo: {
+    type: String,
+    default: "http://i2.kym-cdn.com/entries/icons/original/000/021/033/Screenshot_236.png"
+  },
   description: {
     type: String,
     default: "What a good dog!"
@@ -20,6 +23,6 @@ const petSchema = new Schema({
   score: Number
 });
 
-// Connects us to the Pets collection
+// Connects us to the Pets collection (use singular here)
 // Tells Mongoose / MongoDB that this data represents a pet
 module.exports = mongoose.model('Pet', petSchema);

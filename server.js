@@ -21,7 +21,7 @@ const port = process.env.PORT || 8080;
 const mongoose = require('mongoose');
 
 // Import our Pet model
-const pet = require('./models/pet');
+const Pet = require('./models/pet');
 
 // Connect to MongoDB and the updog database
 mongoose.connect('mongodb://localhost/updog');
@@ -34,14 +34,32 @@ app.use(express.static('public'));
 router.route('/')
   .get((req, res) => {
     res.send({
-      message: "You received a GET request!"
+      message: "You made a GET request!"
     });
   });
 
+// Pets controller
 router.route('/pets')
   .get((req, res) => {
     // Get all the pets
+    Pet.find({}, (err, docs) => {
+      // If there is an error, send 400 status code to the client
+      // along with the an object that includes the error returned
+      if (err !== null) {
+        res
+          .status(400)
+          .send({
+            error: err
+          });
 
+        return;
+      }
+
+      // If all goes well, send back the pets docs
+      res
+        .status(200)
+        .send(docs);
+    });
   })
   .post();
 
